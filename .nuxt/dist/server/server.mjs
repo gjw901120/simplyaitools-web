@@ -1,0 +1,1 @@
+export { default } from "file:///C:/project/simplyAiTools/node_modules/nuxt/node_modules/@nuxt/vite-builder/dist/runtime/vite-node.mjs"

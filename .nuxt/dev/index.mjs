@@ -3,40 +3,40 @@ import { Server } from 'node:http';
 import { resolve, dirname, join } from 'node:path';
 import nodeCrypto from 'node:crypto';
 import { parentPort, threadId } from 'node:worker_threads';
-import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, createError, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, getRouterParam, getResponseStatusText } from 'file://C:/project/simplyAiTools/node_modules/h3/dist/index.mjs';
-import { escapeHtml } from 'file://C:/project/simplyAiTools/node_modules/@vue/shared/dist/shared.cjs.js';
+import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, createError, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, getRouterParam, getResponseStatusText } from 'file://C:/project/simplyaitools-web/node_modules/h3/dist/index.mjs';
+import { escapeHtml } from 'file://C:/project/simplyaitools-web/node_modules/@vue/shared/dist/shared.cjs.js';
 import { promises, readFileSync } from 'node:fs';
-import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file://C:/project/simplyAiTools/node_modules/vue-bundle-renderer/dist/runtime.mjs';
-import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, joinRelativeURL } from 'file://C:/project/simplyAiTools/node_modules/ufo/dist/index.mjs';
-import { renderToString } from 'file://C:/project/simplyAiTools/node_modules/vue/server-renderer/index.mjs';
-import { klona } from 'file://C:/project/simplyAiTools/node_modules/klona/dist/index.mjs';
-import defu, { defuFn } from 'file://C:/project/simplyAiTools/node_modules/defu/dist/defu.mjs';
-import destr, { destr as destr$1 } from 'file://C:/project/simplyAiTools/node_modules/destr/dist/index.mjs';
-import { snakeCase } from 'file://C:/project/simplyAiTools/node_modules/scule/dist/index.mjs';
-import { createHead as createHead$1, propsToString, renderSSRHead } from 'file://C:/project/simplyAiTools/node_modules/unhead/dist/server.mjs';
-import { stringify, uneval } from 'file://C:/project/simplyAiTools/node_modules/devalue/index.js';
-import { isVNode, toValue, isRef } from 'file://C:/project/simplyAiTools/node_modules/vue/index.mjs';
-import { DeprecationsPlugin, PromisesPlugin, TemplateParamsPlugin, AliasSortingPlugin } from 'file://C:/project/simplyAiTools/node_modules/unhead/dist/plugins.mjs';
-import { createHooks } from 'file://C:/project/simplyAiTools/node_modules/hookable/dist/index.mjs';
-import { createFetch, Headers as Headers$1 } from 'file://C:/project/simplyAiTools/node_modules/ofetch/dist/node.mjs';
-import { fetchNodeRequestHandler, callNodeRequestHandler } from 'file://C:/project/simplyAiTools/node_modules/node-mock-http/dist/index.mjs';
-import { createStorage, prefixStorage } from 'file://C:/project/simplyAiTools/node_modules/unstorage/dist/index.mjs';
-import unstorage_47drivers_47fs from 'file://C:/project/simplyAiTools/node_modules/unstorage/drivers/fs.mjs';
-import { digest } from 'file://C:/project/simplyAiTools/node_modules/ohash/dist/index.mjs';
-import { toRouteMatcher, createRouter } from 'file://C:/project/simplyAiTools/node_modules/radix3/dist/index.mjs';
+import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file://C:/project/simplyaitools-web/node_modules/vue-bundle-renderer/dist/runtime.mjs';
+import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, joinRelativeURL } from 'file://C:/project/simplyaitools-web/node_modules/ufo/dist/index.mjs';
+import { renderToString } from 'file://C:/project/simplyaitools-web/node_modules/vue/server-renderer/index.mjs';
+import { klona } from 'file://C:/project/simplyaitools-web/node_modules/klona/dist/index.mjs';
+import defu, { defuFn } from 'file://C:/project/simplyaitools-web/node_modules/defu/dist/defu.mjs';
+import destr, { destr as destr$1 } from 'file://C:/project/simplyaitools-web/node_modules/destr/dist/index.mjs';
+import { snakeCase } from 'file://C:/project/simplyaitools-web/node_modules/scule/dist/index.mjs';
+import { createHead as createHead$1, propsToString, renderSSRHead } from 'file://C:/project/simplyaitools-web/node_modules/unhead/dist/server.mjs';
+import { stringify, uneval } from 'file://C:/project/simplyaitools-web/node_modules/devalue/index.js';
+import { isVNode, toValue, isRef } from 'file://C:/project/simplyaitools-web/node_modules/vue/index.mjs';
+import { DeprecationsPlugin, PromisesPlugin, TemplateParamsPlugin, AliasSortingPlugin } from 'file://C:/project/simplyaitools-web/node_modules/unhead/dist/plugins.mjs';
+import { createHooks } from 'file://C:/project/simplyaitools-web/node_modules/hookable/dist/index.mjs';
+import { createFetch, Headers as Headers$1 } from 'file://C:/project/simplyaitools-web/node_modules/ofetch/dist/node.mjs';
+import { fetchNodeRequestHandler, callNodeRequestHandler } from 'file://C:/project/simplyaitools-web/node_modules/node-mock-http/dist/index.mjs';
+import { createStorage, prefixStorage } from 'file://C:/project/simplyaitools-web/node_modules/unstorage/dist/index.mjs';
+import unstorage_47drivers_47fs from 'file://C:/project/simplyaitools-web/node_modules/unstorage/drivers/fs.mjs';
+import { digest } from 'file://C:/project/simplyaitools-web/node_modules/ohash/dist/index.mjs';
+import { toRouteMatcher, createRouter } from 'file://C:/project/simplyaitools-web/node_modules/radix3/dist/index.mjs';
 import { readFile } from 'node:fs/promises';
-import consola, { consola as consola$1 } from 'file://C:/project/simplyAiTools/node_modules/consola/dist/index.mjs';
-import { ErrorParser } from 'file://C:/project/simplyAiTools/node_modules/youch-core/build/index.js';
-import { Youch } from 'file://C:/project/simplyAiTools/node_modules/youch/build/index.js';
-import { SourceMapConsumer } from 'file://C:/project/simplyAiTools/node_modules/source-map/source-map.js';
+import consola, { consola as consola$1 } from 'file://C:/project/simplyaitools-web/node_modules/consola/dist/index.mjs';
+import { ErrorParser } from 'file://C:/project/simplyaitools-web/node_modules/youch-core/build/index.js';
+import { Youch } from 'file://C:/project/simplyaitools-web/node_modules/youch/build/index.js';
+import { SourceMapConsumer } from 'file://C:/project/simplyaitools-web/node_modules/source-map/source-map.js';
 import { AsyncLocalStorage } from 'node:async_hooks';
-import { getContext } from 'file://C:/project/simplyAiTools/node_modules/unctx/dist/index.mjs';
-import { captureRawStackTrace, parseRawStackTrace } from 'file://C:/project/simplyAiTools/node_modules/errx/dist/index.js';
+import { getContext } from 'file://C:/project/simplyaitools-web/node_modules/unctx/dist/index.mjs';
+import { captureRawStackTrace, parseRawStackTrace } from 'file://C:/project/simplyaitools-web/node_modules/errx/dist/index.js';
 import { fileURLToPath } from 'node:url';
-import { dirname as dirname$1, resolve as resolve$1 } from 'file://C:/project/simplyAiTools/node_modules/pathe/dist/index.mjs';
-import { walkResolver } from 'file://C:/project/simplyAiTools/node_modules/unhead/dist/utils.mjs';
+import { dirname as dirname$1, resolve as resolve$1 } from 'file://C:/project/simplyaitools-web/node_modules/pathe/dist/index.mjs';
+import { walkResolver } from 'file://C:/project/simplyaitools-web/node_modules/unhead/dist/utils.mjs';
 
-const serverAssets = [{"baseName":"server","dir":"C:/project/simplyAiTools/server/assets"}];
+const serverAssets = [{"baseName":"server","dir":"C:/project/simplyaitools-web/server/assets"}];
 
 const assets$1 = createStorage();
 
@@ -48,11 +48,11 @@ const storage = createStorage({});
 
 storage.mount('/assets', assets$1);
 
-storage.mount('root', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"C:/project/simplyAiTools","watchOptions":{"ignored":[null]}}));
-storage.mount('src', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"C:/project/simplyAiTools/server","watchOptions":{"ignored":[null]}}));
-storage.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"C:/project/simplyAiTools/.nuxt"}));
-storage.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"C:/project/simplyAiTools/.nuxt/cache"}));
-storage.mount('data', unstorage_47drivers_47fs({"driver":"fs","base":"C:/project/simplyAiTools/.data/kv"}));
+storage.mount('root', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"C:/project/simplyaitools-web","watchOptions":{"ignored":[null]}}));
+storage.mount('src', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"C:/project/simplyaitools-web/server","watchOptions":{"ignored":[null]}}));
+storage.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"C:/project/simplyaitools-web/.nuxt"}));
+storage.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"C:/project/simplyaitools-web/.nuxt/cache"}));
+storage.mount('data', unstorage_47drivers_47fs({"driver":"fs","base":"C:/project/simplyaitools-web/.data/kv"}));
 
 function useStorage(base = "") {
   return base ? prefixStorage(storage, base) : storage;
@@ -1014,13 +1014,13 @@ if (!window.__NUXT_DEVTOOLS_TIME_METRIC__) {
 window.__NUXT_DEVTOOLS_TIME_METRIC__.appInit = Date.now()
 `;
 
-const _narM7k_ZMqdNv847s5d78Y2bughwYc6HK4kBZwQRuc = (function(nitro) {
+const _nLYBRKlVv_TMAFLvzytUWvCSpxwB8iG5EmhMDazYtg = (function(nitro) {
   nitro.hooks.hook("render:html", (htmlContext) => {
     htmlContext.head.push(`<script>${script}<\/script>`);
   });
 });
 
-const rootDir = "C:/project/simplyAiTools";
+const rootDir = "C:/project/simplyaitools-web";
 
 const appHead = {"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"hid":"description","name":"description","content":"all-in-one platform integrating top AI models like ChatGPT, Claude, Veo3, Elevenlabs, Suno and Midjourney. Use visual workflows and one account to save costs and boost efficiency in creation, coding, and data analysis."},{"name":"keywords","content":"all-in-one platform, chat models, video models, image models, radio models, simply ai tools"}],"link":[{"rel":"icon","type":"image/x-icon","href":"/favicon.ico"},{"rel":"stylesheet","href":"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"},{"rel":"preconnect","href":"https://fonts.googleapis.com"},{"rel":"preconnect","href":"https://fonts.gstatic.com","crossorigin":""},{"rel":"stylesheet","href":"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"}],"style":[],"script":[],"noscript":[],"title":"SimplyAITools: The All-in-One AI Platform","htmlAttrs":{"lang":"en"}};
 
@@ -1039,7 +1039,7 @@ const devReducers = {
   URL: (data) => data instanceof URL ? data.toString() : void 0
 };
 const asyncContext = getContext("nuxt-dev", { asyncContext: true, AsyncLocalStorage });
-const _09GvH6ZsxoEv7lEfhLETALAe8sVhXfVrNyL5Gx4M0UY = (nitroApp) => {
+const _E83sCSiTefkXz0PDlYrb8bZqhfsVkceq6aaSC3SOQ = (nitroApp) => {
   const handler = nitroApp.h3App.handler;
   nitroApp.h3App.handler = (event) => {
     return asyncContext.callAsync({ logs: [], event }, () => handler(event));
@@ -1109,8 +1109,8 @@ function onConsoleLog(callback) {
 }
 
 const plugins = [
-  _narM7k_ZMqdNv847s5d78Y2bughwYc6HK4kBZwQRuc,
-_09GvH6ZsxoEv7lEfhLETALAe8sVhXfVrNyL5Gx4M0UY
+  _nLYBRKlVv_TMAFLvzytUWvCSpxwB8iG5EmhMDazYtg,
+_E83sCSiTefkXz0PDlYrb8bZqhfsVkceq6aaSC3SOQ
 ];
 
 const assets = {};
@@ -1138,7 +1138,7 @@ function getAsset (id) {
 
 const METHODS = /* @__PURE__ */ new Set(["HEAD", "GET"]);
 const EncodingMap = { gzip: ".gz", br: ".br" };
-const _kdGS1C = eventHandler((event) => {
+const _t8T5JS = eventHandler((event) => {
   if (event.method && !METHODS.has(event.method)) {
     return;
   }
@@ -1276,8 +1276,8 @@ function publicAssetsURL(...path) {
 
 const APP_ROOT_OPEN_TAG = `<${appRootTag}${propsToString(appRootAttrs)}>`;
 const APP_ROOT_CLOSE_TAG = `</${appRootTag}>`;
-const getServerEntry = () => import('file://C:/project/simplyAiTools/.nuxt/dist/server/server.mjs').then((r) => r.default || r);
-const getClientManifest = () => import('file://C:/project/simplyAiTools/.nuxt/dist/server/client.manifest.mjs').then((r) => r.default || r).then((r) => typeof r === "function" ? r() : r);
+const getServerEntry = () => import('file://C:/project/simplyaitools-web/.nuxt/dist/server/server.mjs').then((r) => r.default || r);
+const getClientManifest = () => import('file://C:/project/simplyaitools-web/.nuxt/dist/server/client.manifest.mjs').then((r) => r.default || r).then((r) => typeof r === "function" ? r() : r);
 const getSSRRenderer = lazyCachedFunction(async () => {
   const manifest = await getClientManifest();
   if (!manifest) {
@@ -1523,17 +1523,17 @@ async function getIslandContext(event) {
   return ctx;
 }
 
-const _lazy__guEDe = () => Promise.resolve().then(function () { return _slug__get$1; });
-const _lazy_xcrFXi = () => Promise.resolve().then(function () { return index_get$1; });
-const _lazy_9ZOFh0 = () => Promise.resolve().then(function () { return renderer$1; });
+const _lazy_6ekpUd = () => Promise.resolve().then(function () { return _slug__get$1; });
+const _lazy_oY35IL = () => Promise.resolve().then(function () { return index_get$1; });
+const _lazy_9bprAC = () => Promise.resolve().then(function () { return renderer$1; });
 
 const handlers = [
-  { route: '', handler: _kdGS1C, lazy: false, middleware: true, method: undefined },
-  { route: '/api/news/:slug', handler: _lazy__guEDe, lazy: true, middleware: false, method: "get" },
-  { route: '/api/news', handler: _lazy_xcrFXi, lazy: true, middleware: false, method: "get" },
-  { route: '/__nuxt_error', handler: _lazy_9ZOFh0, lazy: true, middleware: false, method: undefined },
+  { route: '', handler: _t8T5JS, lazy: false, middleware: true, method: undefined },
+  { route: '/api/news/:slug', handler: _lazy_6ekpUd, lazy: true, middleware: false, method: "get" },
+  { route: '/api/news', handler: _lazy_oY35IL, lazy: true, middleware: false, method: "get" },
+  { route: '/__nuxt_error', handler: _lazy_9bprAC, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_island/**', handler: _SxA8c9, lazy: false, middleware: false, method: undefined },
-  { route: '/**', handler: _lazy_9ZOFh0, lazy: true, middleware: false, method: undefined }
+  { route: '/**', handler: _lazy_9bprAC, lazy: true, middleware: false, method: undefined }
 ];
 
 function createNitroApp() {

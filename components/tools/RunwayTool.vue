@@ -16,7 +16,7 @@
       <!-- 左侧：参数配置面板 (1/3) -->
       <div class="config-panel">
         <div class="config-header">
-          <h4>{{ activeTab === 'generate' ? 'Video Generation Configuration' : 'Aleph Video Conversion Configuration' }}</h4>
+          <h4>{{ getConfigHeaderTitle() }}</h4>
         </div>
 
         <!-- Tab 分类选择 -->
@@ -318,6 +318,98 @@
             </button>
           </div>
         </form>
+
+        <!-- Extend Tab 表单 -->
+        <form v-if="activeTab === 'extend'" class="config-form" @submit.prevent="generateExtendVideo">
+          <!-- Task 选择 -->
+          <div class="form-group">
+            <label for="extend-task">Task *</label>
+            <div class="select-wrapper">
+              <select id="extend-task" v-model="extendFormData.task" required>
+                <option value="">Select a task</option>
+                <option v-for="task in tasks" :key="task.id" :value="task.id">
+                  {{ task.id }} {{ task.name ? `- ${task.name}` : '' }}
+                </option>
+              </select>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="form-help">
+              Original video generation task. Must be a valid task from a previously generated video.
+            </div>
+          </div>
+
+          <!-- Prompt 输入 -->
+          <div class="form-group">
+            <label for="extend-prompt">Prompt *</label>
+            <textarea
+              id="extend-prompt"
+              v-model="extendFormData.prompt"
+              placeholder="Descriptive text that guides video continuation. Explain what actions, dynamics, or developments should happen next. Be specific but maintain consistency with the original video content."
+              rows="5"
+              required
+            ></textarea>
+            <div class="form-help">
+              <strong>Example:</strong> "The cat continues dancing with more energy and excitement, spinning around, with more intense colored light effects"
+            </div>
+          </div>
+
+          <!-- Quality 选择 -->
+          <div class="form-group">
+            <label>Video Quality *</label>
+            <div class="tab-group">
+              <div class="tab-options">
+                <button 
+                  type="button"
+                  class="tab-option"
+                  :class="{ active: extendFormData.quality === '720p' }"
+                  @click="extendFormData.quality = '720p'"
+                >
+                  <i class="fas fa-hd-video"></i>
+                  720p
+                </button>
+                <button 
+                  type="button"
+                  class="tab-option"
+                  :class="{ active: extendFormData.quality === '1080p' }"
+                  @click="extendFormData.quality = '1080p'"
+                >
+                  <i class="fas fa-video"></i>
+                  1080p
+                </button>
+              </div>
+            </div>
+            <div class="form-help">
+              Video resolution. Optional values: 720p or 1080p.
+            </div>
+          </div>
+
+          <!-- Watermark 输入 -->
+          <div class="form-group">
+            <label for="extend-waterMark">Watermark</label>
+            <input
+              id="extend-waterMark"
+              v-model="extendFormData.waterMark"
+              type="text"
+              placeholder="simplyai"
+              maxlength="20"
+            />
+            <div class="form-help">
+              Optional watermark text displayed on the video. Empty string means no watermark, non-empty string will display the specified watermark text in the bottom-right corner of the video.
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button
+              type="submit"
+              class="btn-primary"
+              :disabled="!extendFormData.task || !extendFormData.prompt || isGenerating"
+            >
+              <i v-if="isGenerating" class="fas fa-spinner fa-spin"></i>
+              <i v-else class="fas fa-expand"></i>
+              {{ isGenerating ? 'Generating...' : 'Generate Extend Video' }}
+            </button>
+          </div>
+        </form>
         
         <!-- 使用提示 -->
         <div class="tips-panel" v-if="activeTab === 'generate'">
@@ -339,6 +431,17 @@
             <li><strong>Motion Effects:</strong> Use camera movement terminology to enhance video dynamics</li>
             <li><strong>Temporal Control:</strong> Control transformation rhythm through temporal elements (gradually, suddenly, etc.)</li>
             <li><strong>Video Requirements:</strong> Ensure video URL is accessible via HTTPS and file size does not exceed 10MB</li>
+          </ul>
+        </div>
+
+        <!-- Extend Usage Tips -->
+        <div class="tips-panel" v-if="activeTab === 'extend'">
+          <h4>💡 Extend Usage Tips</h4>
+          <ul class="tips-list">
+            <li><strong>Continuation Description:</strong> Describe what should happen next in the video sequence</li>
+            <li><strong>Consistency:</strong> Maintain visual and narrative consistency with the original video</li>
+            <li><strong>Dynamic Actions:</strong> Specify movements, actions, and developments clearly</li>
+            <li><strong>Quality Selection:</strong> Choose resolution based on your needs - 720p for faster generation, 1080p for higher quality</li>
           </ul>
         </div>
       </div>
@@ -418,17 +521,31 @@ import { ref, reactive, watch, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import UploadImage from './common/UploadImage.vue'
 
-const router = useRouter()
+// 客户端检查（放在最前面，避免在 SSR 时访问路由等客户端 API）
+const isClient = typeof window !== 'undefined'
 
-// 注入父组件的函数
-const addToUsageHistory = inject('addToUsageHistory')
+// 安全地获取路由（在 SSR 时会返回 null）
+let router = null
+try {
+  if (isClient) {
+    router = useRouter()
+  }
+} catch (e) {
+  // 在 SSR 时忽略路由错误
+  console.warn('Router not available in SSR context')
+}
+
+// 注入父组件的函数（可选，可能为 undefined）
+const addToUsageHistory = inject('addToUsageHistory', null)
 
 // Tab 管理
 const activeTab = ref('generate')
-const tabs = [
+// tabs 作为常量数组，不需要响应式
+const tabs = Object.freeze([
   { id: 'generate', name: 'Generate', icon: 'fas fa-video' },
+  { id: 'extend', name: 'Extend', icon: 'fas fa-expand' },
   { id: 'aleph', name: 'Aleph', icon: 'fas fa-magic' }
-]
+])
 
 // Generate Tab Form data
 const formData = reactive({
@@ -450,9 +567,23 @@ const alephFormData = reactive({
   referenceImageFile: null
 })
 
+// Extend Tab Form data
+const extendFormData = reactive({
+  task: '',
+  prompt: '',
+  quality: '720p',
+  waterMark: ''
+})
+
 const isGenerating = ref(false)
 const generatedVideos = ref([])
 const alephReferenceVideo = ref('')
+
+// Tasks 列表（后续会从服务端获取）
+const tasks = ref([
+  { id: 'ee603959-debb-48d1-98c4-a6d1c717eba6', name: 'Sample Video 1' },
+  { id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890', name: 'Sample Video 2' }
+])
 
 // Watch for duration and quality conflicts
 watch([() => formData.duration, () => formData.quality], ([duration, quality]) => {
@@ -463,6 +594,7 @@ watch([() => formData.duration, () => formData.quality], ([duration, quality]) =
 
 // Handle image upload
 const handleImageUpdate = (files) => {
+  if (!isClient) return
   if (files && files.length > 0) {
     formData.imageFile = files[0]
   } else {
@@ -472,6 +604,7 @@ const handleImageUpdate = (files) => {
 
 // Handle Aleph image upload
 const handleAlephImageUpdate = (files) => {
+  if (!isClient) return
   if (files && files.length > 0) {
     alephFormData.referenceImageFile = files[0]
   } else {
@@ -480,32 +613,42 @@ const handleAlephImageUpdate = (files) => {
 }
 
 // 文件转Base64
-const fileToBase64 = (file) => new Promise((resolve, reject) => {
-  const reader = new FileReader()
-  reader.onload = () => resolve(String(reader.result))
-  reader.onerror = reject
-  reader.readAsDataURL(file)
-})
+const fileToBase64 = (file) => {
+  if (!isClient) return Promise.resolve('')
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(String(reader.result))
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+}
 
 // 处理 Aleph 视频上传
 const handleAlephVideoUpload = async (e) => {
-  const file = e.target.files[0]
+  if (!isClient) return
+  const file = e.target.files?.[0]
   if (!file) return
   
   try {
     if (!file.type.startsWith('video/')) {
-      alert('Please select a valid video format')
+      if (typeof window !== 'undefined') {
+        alert('Please select a valid video format')
+      }
       return
     }
     if (file.size > 10 * 1024 * 1024) {
-      alert('Video size cannot exceed 10MB')
+      if (typeof window !== 'undefined') {
+        alert('Video size cannot exceed 10MB')
+      }
       return
     }
     alephFormData.videoFile = file
     alephReferenceVideo.value = await fileToBase64(file)
   } catch (error) {
     console.error('File conversion failed:', error)
-    alert('File processing failed, please try again')
+    if (typeof window !== 'undefined') {
+      alert('File processing failed, please try again')
+    }
   }
 }
 
@@ -590,21 +733,21 @@ const generateAlephVideo = async () => {
       // videoUrl = await uploadVideoToServer(alephFormData.videoFile)
     }
     
-    // 构建请求数据
+    // 构建请求数据（使用纯对象，避免响应式对象）
     const requestData = {
-      prompt: alephFormData.prompt,
-      videoUrl: videoUrl
+      prompt: String(alephFormData.prompt),
+      videoUrl: String(videoUrl)
     }
     
     // 可选字段
     if (alephFormData.waterMark) {
-      requestData.waterMark = alephFormData.waterMark
+      requestData.waterMark = String(alephFormData.waterMark)
     }
     if (alephFormData.aspectRatio) {
-      requestData.aspectRatio = alephFormData.aspectRatio
+      requestData.aspectRatio = String(alephFormData.aspectRatio)
     }
     if (alephFormData.seed !== null && alephFormData.seed !== undefined) {
-      requestData.seed = alephFormData.seed
+      requestData.seed = Number(alephFormData.seed)
     }
     // 如果有上传的参考图片，需要先上传到服务器获取公开可访问的URL
     // 在实际API调用中，需要先调用文件上传接口获取URL，然后再设置 referenceImage
@@ -637,6 +780,69 @@ const generateAlephVideo = async () => {
     
   } catch (error) {
     console.error('Failed to generate Aleph video:', error)
+  } finally {
+    isGenerating.value = false
+  }
+}
+
+// Get config header title based on active tab
+const getConfigHeaderTitle = () => {
+  if (!isClient) return 'Configuration'
+  const titles = {
+    'generate': 'Video Generation Configuration',
+    'aleph': 'Aleph Video Conversion Configuration',
+    'extend': 'Video Extend Configuration'
+  }
+  return titles[activeTab.value] || 'Configuration'
+}
+
+// Extend 视频生成方法
+const generateExtendVideo = async () => {
+  if (!extendFormData.task || !extendFormData.prompt) return
+  
+  // 添加到使用历史
+  if (addToUsageHistory) {
+    addToUsageHistory('Runway Extend')
+  }
+  
+  isGenerating.value = true
+  
+  try {
+    // 构建请求数据（使用纯对象，避免响应式对象）
+    const requestData = {
+      task: String(extendFormData.task),
+      prompt: String(extendFormData.prompt),
+      quality: String(extendFormData.quality)
+    }
+    
+    // 可选字段
+    if (extendFormData.waterMark) {
+      requestData.waterMark = String(extendFormData.waterMark)
+    }
+    
+    // 模拟API调用
+    await new Promise(resolve => setTimeout(resolve, 3000))
+    
+    // 模拟生成结果
+    const newVideo = {
+      id: Date.now(),
+      url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+      thumbnail: 'https://via.placeholder.com/320x180/3b82f6/ffffff?text=Runway+Extend+Video',
+      duration: 'Extended Video',
+      resolution: extendFormData.quality,
+      prompt: extendFormData.prompt,
+      createdAt: new Date().toISOString()
+    }
+    
+    generatedVideos.value.unshift(newVideo)
+    
+    // 重置表单
+    extendFormData.task = ''
+    extendFormData.prompt = ''
+    extendFormData.waterMark = ''
+    
+  } catch (error) {
+    console.error('Failed to generate Extend video:', error)
   } finally {
     isGenerating.value = false
   }

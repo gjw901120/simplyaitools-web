@@ -30,9 +30,7 @@
               rows="4"
               required
             ></textarea>
-            <div class="form-help">
-              Describe in detail the visual elements you want to add or modify. English input only.
-            </div>
+            
           </div>
 
           <!-- 视频上传 -->
@@ -331,12 +329,17 @@ const clearResults = () => {
   border-radius: 8px;
   overflow: hidden;
   margin-right: 16px;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tool-avatar img {
-  width: 48px;
-  height: 48px;
-  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: auto;
 }
 
 .tool-details h3 {

@@ -33,6 +33,7 @@ interface _GlobalComponents {
     'ToolsMidjourneyTool': typeof import("../components/tools/MidjourneyTool.vue")['default']
     'ToolsNanoBananaTool': typeof import("../components/tools/NanoBananaTool.vue")['default']
     'ToolsRunwayTool': typeof import("../components/tools/RunwayTool.vue")['default']
+    'ToolsSoraTool': typeof import("../components/tools/SoraTool.vue")['default']
     'ToolsSunoTool': typeof import("../components/tools/SunoTool.vue")['default']
     'ToolsVeo3Tool': typeof import("../components/tools/Veo3Tool.vue")['default']
     'ToolsCommonUploadAudio': typeof import("../components/tools/common/UploadAudio.vue")['default']
@@ -82,6 +83,7 @@ interface _GlobalComponents {
     'LazyToolsMidjourneyTool': LazyComponent<typeof import("../components/tools/MidjourneyTool.vue")['default']>
     'LazyToolsNanoBananaTool': LazyComponent<typeof import("../components/tools/NanoBananaTool.vue")['default']>
     'LazyToolsRunwayTool': LazyComponent<typeof import("../components/tools/RunwayTool.vue")['default']>
+    'LazyToolsSoraTool': LazyComponent<typeof import("../components/tools/SoraTool.vue")['default']>
     'LazyToolsSunoTool': LazyComponent<typeof import("../components/tools/SunoTool.vue")['default']>
     'LazyToolsVeo3Tool': LazyComponent<typeof import("../components/tools/Veo3Tool.vue")['default']>
     'LazyToolsCommonUploadAudio': LazyComponent<typeof import("../components/tools/common/UploadAudio.vue")['default']>
@@ -137,6 +139,7 @@ export const ToolsLumaTool: typeof import("../components/tools/LumaTool.vue")['d
 export const ToolsMidjourneyTool: typeof import("../components/tools/MidjourneyTool.vue")['default']
 export const ToolsNanoBananaTool: typeof import("../components/tools/NanoBananaTool.vue")['default']
 export const ToolsRunwayTool: typeof import("../components/tools/RunwayTool.vue")['default']
+export const ToolsSoraTool: typeof import("../components/tools/SoraTool.vue")['default']
 export const ToolsSunoTool: typeof import("../components/tools/SunoTool.vue")['default']
 export const ToolsVeo3Tool: typeof import("../components/tools/Veo3Tool.vue")['default']
 export const ToolsCommonUploadAudio: typeof import("../components/tools/common/UploadAudio.vue")['default']
@@ -186,6 +189,7 @@ export const LazyToolsLumaTool: LazyComponent<typeof import("../components/tools
 export const LazyToolsMidjourneyTool: LazyComponent<typeof import("../components/tools/MidjourneyTool.vue")['default']>
 export const LazyToolsNanoBananaTool: LazyComponent<typeof import("../components/tools/NanoBananaTool.vue")['default']>
 export const LazyToolsRunwayTool: LazyComponent<typeof import("../components/tools/RunwayTool.vue")['default']>
+export const LazyToolsSoraTool: LazyComponent<typeof import("../components/tools/SoraTool.vue")['default']>
 export const LazyToolsSunoTool: LazyComponent<typeof import("../components/tools/SunoTool.vue")['default']>
 export const LazyToolsVeo3Tool: LazyComponent<typeof import("../components/tools/Veo3Tool.vue")['default']>
 export const LazyToolsCommonUploadAudio: LazyComponent<typeof import("../components/tools/common/UploadAudio.vue")['default']>

@@ -568,9 +568,9 @@ const getPromptPlaceholder = () => {
 // 获取提示词说明
 const getPromptHint = () => {
   if (formData.generationType === 'VIDEO_EXTEND') {
-    return 'For example: "Let the video continue to play, add more actions and scene changes"'
+    return ''
   }
-  return 'For example: "A dog playing in the park, sunny day, slow-motion shot"'
+  return ''
 }
 
 // 获取预览视频路径
@@ -771,11 +771,8 @@ const shareVideo = () => {
   border-bottom: 1px solid #e2e8f0;
 }
 
-.tool-avatar img {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-}
+.tool-avatar { width: 48px; height: 48px; border-radius: 12px; overflow: hidden; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; }
+.tool-avatar img { width: 100%; height: 100%; object-fit: contain; image-rendering: auto; }
 
 .tool-details h3 {
   margin: 0 0 4px 0;

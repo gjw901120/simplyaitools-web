@@ -1370,12 +1370,17 @@ const shareResult = () => {
   border-radius: 8px;
   overflow: hidden;
   margin-right: 16px;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tool-avatar img {
-  width: 48px;
-  height: 48px;
-  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: auto;
 }
 
 .tool-details h3 {

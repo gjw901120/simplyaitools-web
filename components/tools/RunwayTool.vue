@@ -233,9 +233,7 @@
                 class="file-input"
               />
             </div>
-            <div class="form-hint">
-              Input video for conversion. Supports MP4, MOV, AVI formats, maximum 10MB, must be accessible via HTTPS.
-            </div>
+            
           </div>
 
           <!-- Watermark 输入 -->
@@ -253,23 +251,60 @@
             </div>
           </div>
 
-          <!-- Aspect Ratio 选择 -->
+          <!-- Aspect Ratio 选择：tab 单选，默认选第一个 -->
           <div class="form-group">
-            <label for="aleph-aspectRatio">Aspect Ratio</label>
-            <div class="select-wrapper">
-              <select id="aleph-aspectRatio" v-model="alephFormData.aspectRatio">
-                <option value="">Default</option>
-                <option value="16:9">16:9 (Landscape)</option>
-                <option value="9:16">9:16 (Mobile Portrait)</option>
-                <option value="4:3">4:3 (Standard)</option>
-                <option value="3:4">3:4 (Portrait)</option>
-                <option value="1:1">1:1 (Square)</option>
-                <option value="21:9">21:9 (Ultra-wide)</option>
-              </select>
-              <i class="fas fa-chevron-down"></i>
-            </div>
-            <div class="form-help">
-              Choose the appropriate aspect ratio based on your target platform (e.g., 9:16 for mobile portrait, 16:9 for desktop widescreen).
+            <label>Aspect Ratio</label>
+            <div class="tab-group">
+              <div class="tab-options">
+                <button 
+                  type="button"
+                  class="tab-option"
+                  :class="{ active: alephFormData.aspectRatio === '16:9' }"
+                  @click="alephFormData.aspectRatio = '16:9'"
+                >
+                  16:9
+                </button>
+                <button 
+                  type="button"
+                  class="tab-option"
+                  :class="{ active: alephFormData.aspectRatio === '9:16' }"
+                  @click="alephFormData.aspectRatio = '9:16'"
+                >
+                  9:16
+                </button>
+                <button 
+                  type="button"
+                  class="tab-option"
+                  :class="{ active: alephFormData.aspectRatio === '4:3' }"
+                  @click="alephFormData.aspectRatio = '4:3'"
+                >
+                  4:3
+                </button>
+                <button 
+                  type="button"
+                  class="tab-option"
+                  :class="{ active: alephFormData.aspectRatio === '3:4' }"
+                  @click="alephFormData.aspectRatio = '3:4'"
+                >
+                  3:4
+                </button>
+                <button 
+                  type="button"
+                  class="tab-option"
+                  :class="{ active: alephFormData.aspectRatio === '1:1' }"
+                  @click="alephFormData.aspectRatio = '1:1'"
+                >
+                  1:1
+                </button>
+                <button 
+                  type="button"
+                  class="tab-option"
+                  :class="{ active: alephFormData.aspectRatio === '21:9' }"
+                  @click="alephFormData.aspectRatio = '21:9'"
+                >
+                  21:9
+                </button>
+              </div>
             </div>
           </div>
 
@@ -348,9 +383,7 @@
               rows="5"
               required
             ></textarea>
-            <div class="form-help">
-              <strong>Example:</strong> "The cat continues dancing with more energy and excitement, spinning around, with more intense colored light effects"
-            </div>
+            
           </div>
 
           <!-- Quality 选择 -->
@@ -378,9 +411,7 @@
                 </button>
               </div>
             </div>
-            <div class="form-help">
-              Video resolution. Optional values: 720p or 1080p.
-            </div>
+            
           </div>
 
           <!-- Watermark 输入 -->
@@ -562,7 +593,7 @@ const alephFormData = reactive({
   prompt: '',
   videoFile: null,
   waterMark: '',
-  aspectRatio: '',
+  aspectRatio: '16:9',
   seed: null,
   referenceImageFile: null
 })
@@ -882,12 +913,17 @@ const generateExtendVideo = async () => {
   border-radius: 8px;
   overflow: hidden;
   margin-right: 16px;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tool-avatar img {
-  width: 48px;
-  height: 48px;
-  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: auto;
 }
 
 .tool-details h3 {

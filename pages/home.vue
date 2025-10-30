@@ -106,6 +106,9 @@
           <!-- Suno 工具组件 -->
           <SunoTool v-else-if="getSelectedToolInfo().name === 'Suno'" />
           
+          <!-- Sora 工具组件 -->
+          <SoraTool v-else-if="getSelectedToolInfo().name === 'Sora'" />
+          
           <!-- 其他工具的聊天界面 -->
           <div v-else class="chat-interface">
             <div class="chat-header">
@@ -172,6 +175,7 @@ import NanoBananaTool from '~/components/tools/NanoBananaTool.vue'
 import ElevenLabsTool from '~/components/tools/ElevenLabsTool.vue'
 import FluxKontextTool from '~/components/tools/FluxKontextTool.vue'
 import SunoTool from '~/components/tools/SunoTool.vue'
+import SoraTool from '~/components/tools/SoraTool.vue'
 import { useRouter } from 'vue-router'
 import { useRoute } from 'vue-router'
 import { watch, provide, onMounted } from 'vue'
@@ -189,7 +193,13 @@ const toolRouteMap = {
   'Flux Kontext': '/home/flux-kontext',
   'Nano Banana': '/home/nano-banana',
   'Elevenlabs': '/home/elevenlabs',
-  'Suno': '/home/suno'
+  'Suno': '/home/suno',
+  'Sora': '/home/sora',
+  // Chat tools
+  'GPT': '/home/gpt',
+  'Deepseek': '/home/deepseek',
+  'Claude': '/home/claude',
+  'Gemini': '/home/gemini'
 }
 
 // SEO优化
@@ -540,6 +550,15 @@ const allTools = ref([
     usageCount: 650
   },
   {
+    id: 16,
+    name: 'Sora',
+    type: 'video',
+    description: 'Sora 2 视频生成（Text-to-Video / Image-to-Video）',
+    icon: '/tools-logo/Veo.png',
+    rating: 4.7,
+    usageCount: 0
+  },
+  {
     id: 15,
     name: 'Midjourney',
     type: 'image',
@@ -579,6 +598,31 @@ const selectCategory = (categoryId) => {
   // 重置选中的工具为第一个
   const tools = getCurrentTools()
   selectedTool.value = tools.length > 0 ? tools[0].id : null
+
+  // 根据一级分类切换到该分类的默认工具路由
+  const selectedNav = navItems.value.find(nav => nav.id === categoryId)
+  if (!selectedNav) return
+
+  const defaultToolByCategory = {
+    chat: 'GPT',
+    image: 'GPT 4o Image'
+    // 其他分类可按需追加，如：audio/video
+  }
+
+  const defaultToolName = defaultToolByCategory[selectedNav.type]
+  if (defaultToolName && toolRouteMap[defaultToolName]) {
+    const defaultTool = allTools.value.find(t => t.name === defaultToolName)
+    if (defaultTool) {
+      selectedTool.value = defaultTool.id
+      router.push(toolRouteMap[defaultToolName])
+    }
+  } else if (tools.length > 0) {
+    // 若没有定义默认映射，则跳转到该分类下第一个工具
+    const firstTool = tools[0]
+    if (firstTool && toolRouteMap[firstTool.name]) {
+      router.push(toolRouteMap[firstTool.name])
+    }
+  }
 }
 
 const selectTool = (toolId) => {
@@ -748,7 +792,13 @@ watch(() => route.path, (newPath) => {
     '/home/flux-kontext': 'Flux Kontext',
     '/home/nano-banana': 'Nano Banana',
     '/home/elevenlabs': 'Elevenlabs',
-    '/home/suno': 'Suno'
+    '/home/suno': 'Suno',
+    '/home/sora': 'Sora',
+    // Chat tools
+    '/home/gpt': 'GPT',
+    '/home/deepseek': 'Deepseek',
+    '/home/claude': 'Claude',
+    '/home/gemini': 'Gemini'
   }
   
   const toolName = routeToToolMap[newPath]

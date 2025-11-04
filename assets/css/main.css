@@ -5,6 +5,11 @@
     --content-max-width: 1600px;
 }
 
+/* 基础样式设置 */
+* {
+    box-sizing: border-box;
+}
+
 /* 响应式间距 */
 @media (max-width: 768px) {
     :root {

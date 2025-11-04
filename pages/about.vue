@@ -3,16 +3,10 @@
     <!-- Hero Section -->
     <section class="hero-section">
       <div class="simply-container">
-        <div class="breadcrumb">
-          <NuxtLink to="/" class="breadcrumb-link home-link">
-            <i class="fas fa-home"></i>
-            首页
-          </NuxtLink>
-        </div>
         <div class="hero-content">
-          <h1 class="hero-title">关于 Simply AI Tools</h1>
+          <h1 class="hero-title">About Simply AI Tools</h1>
           <p class="hero-subtitle">
-            这是一个收集各种实用 AI 工具的网站，致力于为用户提供最优质的AI工具体验。
+            A platform that collects various practical AI tools, committed to providing users with the best AI tool experience.
           </p>
         </div>
       </div>
@@ -22,15 +16,15 @@
     <section class="content-section">
       <div class="simply-container">
         <div class="content-wrapper">
-          <h2>我们的使命</h2>
-          <p>Simply AI Tools 致力于为用户提供最全面、最实用的AI工具集合，让每个人都能轻松使用人工智能技术提升工作效率和创造力。</p>
+          <h2>Our Mission</h2>
+          <p>Simply AI Tools is committed to providing users with the most comprehensive and practical AI tool collection, enabling everyone to easily use artificial intelligence technology to improve work efficiency and creativity.</p>
           
-          <h2>为什么选择我们</h2>
+          <h2>Why Choose Us</h2>
           <ul>
-            <li>精选优质AI工具，经过严格筛选</li>
-            <li>持续更新，紧跟AI技术发展</li>
-            <li>详细的使用指南和教程</li>
-            <li>用户友好的界面设计</li>
+            <li>Curated high-quality AI tools, rigorously screened</li>
+            <li>Continuous updates, keeping up with AI technology developments</li>
+            <li>Detailed usage guides and tutorials</li>
+            <li>User-friendly interface design</li>
           </ul>
         </div>
       </div>

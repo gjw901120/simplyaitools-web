@@ -2,7 +2,7 @@
   <section class="faq-section">
     <div class="simply-container">
       <div class="faq-header">
-        <h2 class="faq-title">常见问题</h2>
+        <h2 class="faq-title">Frequently Asked Questions</h2>
       </div>
       
       <div class="faq-list">
@@ -34,23 +34,23 @@ import { ref } from 'vue'
 // FAQ数据
 const faqItems = ref([
   {
-    question: "Monica 是什么？",
-    answer: "Monica 是一个由 ChatGPT API 提供支持的Chrome扩展，旨在成为您轻松聊天和撰写文案的个人 AI 助手。",
+    question: "What is SimplyAI?",
+    answer: "SimplyAI is a platform that integrates multiple AI models, designed to be your one-stop platform for easily using various AI tools, including chat, image generation, audio processing, video generation, and more.",
     isOpen: true
   },
   {
-    question: "我该如何使用 Monica？",
-    answer: "安装Monica扩展后，您可以在任何网页上使用Ctrl+M快捷键启动聊天界面，或者点击扩展图标开始对话。您可以询问任何问题、请求文案创作、翻译文本等。",
+    question: "How do I use SimplyAI?",
+    answer: "After registering a SimplyAI account, you can access over 50 AI models and tools on the platform. You can use the chat feature for conversations, image generation tools to create images, audio tools to process sound, or video tools to generate video content.",
     isOpen: false
   },
   {
-    question: "Monica 是免费的吗？",
-    answer: "Monica提供免费版本，包含基础的AI对话功能。我们还提供付费的高级版本，包含更多高级功能和更高的使用限额。",
+    question: "Is SimplyAI free?",
+    answer: "SimplyAI offers a free version that includes basic AI conversation features. We also provide a paid premium version with more advanced features and higher usage limits.",
     isOpen: false
   },
   {
-    question: "Monica 是如何工作的？",
-    answer: "Monica 使用由 ChatGPT API 提供支持的先进人工智能技术，理解并回应您的聊天消息，以及根据提供的模板生成文案。此外，Monica 还可以翻译、改写和解释任何网页上的文本。",
+    question: "How does SimplyAI work?",
+    answer: "SimplyAI integrates multiple AI models including ChatGPT, Claude, Gemini, and others, as well as image generation tools like Midjourney and Flux Kontext, audio tools like Suno and Elevenlabs, and video generation tools like Veo3, Runway, Luma, and Sora, providing you with comprehensive AI capabilities.",
     isOpen: false
   }
 ])

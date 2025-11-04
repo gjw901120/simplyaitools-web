@@ -10,19 +10,7 @@
         </div>
 
         <nav class="nav">
-          <NuxtLink to="/" class="nav-link">首页</NuxtLink>
           <NuxtLink to="/home" class="nav-link">Home</NuxtLink>
-
-          <!-- Product Dropdown -->
-          <div class="nav-item dropdown" @mouseenter="showProductDropdown = true" @mouseleave="hideProductDropdown">
-            <button class="nav-link dropdown-toggle">
-              Products
-              <i class="fas fa-chevron-down"></i>
-            </button>
-            <div v-if="showProductDropdown" class="dropdown-menu" @mouseenter="showProductDropdown = true">
-              <ProductDropdown />
-            </div>
-          </div>
 
           <NuxtLink to="/pricing" class="nav-link">Pricing</NuxtLink>
           <NuxtLink to="/news" class="nav-link">News</NuxtLink>
@@ -41,7 +29,6 @@
 
       <!-- Mobile Menu -->
       <div v-if="mobileMenuOpen" class="mobile-menu">
-        <NuxtLink to="/" class="mobile-nav-link" @click="closeMobileMenu">首页</NuxtLink>
         <NuxtLink to="/home" class="mobile-nav-link" @click="closeMobileMenu">Home</NuxtLink>
         <NuxtLink to="/features" class="mobile-nav-link" @click="closeMobileMenu">Features</NuxtLink>
         <NuxtLink to="/pricing" class="mobile-nav-link" @click="closeMobileMenu">Pricing</NuxtLink>
@@ -58,7 +45,6 @@
 
 <script setup>
 const mobileMenuOpen = ref(false)
-const showProductDropdown = ref(false)
 
 const toggleMobileMenu = () => {
   mobileMenuOpen.value = !mobileMenuOpen.value
@@ -66,12 +52,6 @@ const toggleMobileMenu = () => {
 
 const closeMobileMenu = () => {
   mobileMenuOpen.value = false
-}
-
-const hideProductDropdown = () => {
-  setTimeout(() => {
-    showProductDropdown.value = false
-  }, 200)
 }
 </script>
 
@@ -110,7 +90,7 @@ const hideProductDropdown = () => {
 
 .nav {
   display: flex;
-  gap: 0;
+  gap: 0.75rem;
   align-items: center;
 }
 
@@ -125,8 +105,9 @@ const hideProductDropdown = () => {
   color: #4b5563;
   text-decoration: none;
   font-weight: 500;
+  font-size: 1.125rem;
   transition: color 0.3s ease;
-  padding: 1rem 1.5rem;
+  padding: 1rem 2.25rem;
   border: none;
   background: none;
   cursor: pointer;

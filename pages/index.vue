@@ -2,7 +2,6 @@
   <div class="homepage">
     <HeroSection />
     <ImageGallery />
-    <FeatureGrid />
     <FAQSection />
   </div>
 </template>

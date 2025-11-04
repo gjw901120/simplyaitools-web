@@ -8,29 +8,21 @@
             <span class="gradient-text">for Everything</span>
           </h1>
           <p class="hero-description">
-            Access 100+ AI models and tools in one platform. From coding and writing
-            to image generation and analysis - everything you need to work smarter.
+            Access over 50 AI models and tools in one platform, ranging from Chat to Image, Audio, and Video<br>
+            Everything you need to make your work smarter.
           </p>
           <div class="hero-actions">
             <button class="btn-primary" @click="startFreeTrial">
-              Get Started Free
+              Get Started
             </button>
             <button class="btn-secondary" @click="exploreProducts">
               Explore Products
             </button>
           </div>
           <div class="hero-features">
-            <div class="feature-pill">
+            <div class="feature-pill" @click="goToHome">
               <i class="fas fa-brain"></i>
               50+ AI Models
-            </div>
-            <div class="feature-pill">
-              <i class="fas fa-tools"></i>
-              50+ Tools
-            </div>
-            <div class="feature-pill">
-              <i class="fas fa-plug"></i>
-              5 Platforms
             </div>
           </div>
         </div>
@@ -78,16 +70,19 @@
 </template>
 
 <script setup>
+const router = useRouter()
 const userInput = ref('')
 
 const startFreeTrial = () => {
-  // Handle free trial logic
-  console.log('Starting free trial...')
+  router.push('/pricing')
 }
 
 const exploreProducts = () => {
-  // Navigate to products or scroll to features
-  console.log('Exploring products...')
+  router.push('/home')
+}
+
+const goToHome = () => {
+  router.push('/home')
 }
 
 const sendMessage = () => {
@@ -192,6 +187,14 @@ const sendMessage = () => {
   font-size: 0.9rem;
   font-weight: 500;
   color: #667eea;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.feature-pill:hover {
+  background: rgba(102, 126, 234, 0.15);
+  border-color: rgba(102, 126, 234, 0.3);
+  transform: translateY(-2px);
 }
 
 .feature-pill i {

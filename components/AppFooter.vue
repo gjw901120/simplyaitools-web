@@ -12,65 +12,6 @@
             Your intelligent AI assistant for work, learning, and creativity.
             Powered by advanced artificial intelligence technology.
           </p>
-          <div class="social-links">
-            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-            <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
-            <a href="#" class="social-link"><i class="fab fa-github"></i></a>
-            <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
-          </div>
-        </div>
-
-        <!-- Middle Sections - Links -->
-        <div class="footer-section">
-          <h4>Applications</h4>
-          <ul class="footer-links">
-            <li><a href="#">Browser Extension</a></li>
-            <li><a href="#">Desktop App</a></li>
-            <li><a href="#">Mobile App</a></li>
-            <li><a href="#">Monica Code</a></li>
-            <li><a href="#">VS Code Extension</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-section">
-          <h4>Learn More</h4>
-          <ul class="footer-links">
-            <li><a href="#">Learning Center</a></li>
-            <li><a href="#">Help Center</a></li>
-            <li><a href="#">Pricing</a></li>
-            <li><a href="#">Monica Voice</a></li>
-            <li><a href="#">Change Shortcuts</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-section">
-          <h4>About</h4>
-          <ul class="footer-links">
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Terms & Conditions</a></li>
-            <li><a href="#">Affiliate Program</a></li>
-            <li><a href="#">Careers</a></li>
-            <li><a href="#">Contact Us</a></li>
-          </ul>
-        </div>
-
-        <!-- Right Section - Platform Info -->
-        <div class="footer-section">
-          <h4>Platform Support</h4>
-          <div class="platform-support">
-            <div class="platform-group">
-              <strong>Desktop</strong>
-              <span>Windows & Mac</span>
-            </div>
-            <div class="platform-group">
-              <strong>Mobile</strong>
-              <span>Android & iOS</span>
-            </div>
-            <div class="platform-group">
-              <strong>Browser</strong>
-              <span>Chrome & Edge</span>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -83,13 +24,6 @@
               CHATGPT is a registered trademark of OPENAI OPCO, LLC.
             </p>
           </div>
-          <div class="footer-actions">
-            <select v-model="selectedLanguage" class="language-select">
-              <option value="en">English</option>
-              <option value="zh">中文</option>
-              <option value="ja">日本語</option>
-            </select>
-          </div>
         </div>
       </div>
     </div>
@@ -97,7 +31,6 @@
 </template>
 
 <script setup>
-const selectedLanguage = ref('en')
 </script>
 
 <style scoped>
@@ -109,7 +42,7 @@ const selectedLanguage = ref('en')
 
 .footer-content {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr;
+  grid-template-columns: 1fr;
   gap: 40px;
   margin-bottom: 40px;
 }
@@ -141,69 +74,30 @@ const selectedLanguage = ref('en')
   margin-bottom: 1.5rem;
 }
 
-.social-links {
-  display: flex;
-  gap: 1rem;
+.footer-links-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #1f2937;
 }
 
-.social-link {
+.footer-links-row {
   display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
   align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: #e5e7eb;
-  border-radius: 8px;
-  color: #6b7280;
-  text-decoration: none;
-  transition: all 0.3s ease;
 }
 
-.social-link:hover {
-  background: #667eea;
-  color: white;
-  transform: translateY(-2px);
-}
-
-.footer-links {
-  list-style: none;
-}
-
-.footer-links li {
-  margin-bottom: 0.75rem;
-}
-
-.footer-links a {
+.footer-link {
   color: #6b7280;
   text-decoration: none;
   transition: color 0.3s ease;
   font-size: 0.9rem;
+  white-space: nowrap;
 }
 
-.footer-links a:hover {
+.footer-link:hover {
   color: #667eea;
-}
-
-.platform-support {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.platform-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.platform-group strong {
-  color: #1f2937;
-  font-size: 0.9rem;
-}
-
-.platform-group span {
-  color: #6b7280;
-  font-size: 0.85rem;
 }
 
 .footer-bottom {
@@ -228,26 +122,9 @@ const selectedLanguage = ref('en')
   opacity: 0.7;
 }
 
-.language-select {
-  background: #ffffff;
-  color: #374151;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  padding: 0.5rem;
-  font-size: 0.9rem;
-}
-
-@media (max-width: 1024px) {
-  .footer-content {
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
-  }
-}
-
 @media (max-width: 768px) {
-  .footer-content {
-    grid-template-columns: 1fr;
-    gap: 30px;
+  .footer-links-row {
+    gap: 1rem;
   }
 
   .footer-bottom-content {

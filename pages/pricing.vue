@@ -3,12 +3,6 @@
     <!-- Hero Section -->
     <section class="hero-section">
       <div class="simply-container">
-        <div class="breadcrumb">
-          <NuxtLink to="/" class="breadcrumb-link home-link">
-            <i class="fas fa-home"></i>
-            首页
-          </NuxtLink>
-        </div>
         <div class="hero-content">
           <h1 class="hero-title">Plans & Pricing</h1>
           <p class="hero-subtitle">

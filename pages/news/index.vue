@@ -3,12 +3,6 @@
     <!-- Hero Section - 静态外壳 -->
     <section class="news-hero">
       <div class="simply-container">
-        <div class="breadcrumb">
-          <NuxtLink to="/" class="breadcrumb-link home-link">
-            <i class="fas fa-home"></i>
-            首页
-          </NuxtLink>
-        </div>
         <div class="hero-content">
           <h1 class="hero-title">AI News & Updates</h1>
           <p class="hero-subtitle">

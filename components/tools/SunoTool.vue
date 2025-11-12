@@ -7,7 +7,7 @@
       </div>
       <div class="tool-details">
         <h3>Suno</h3>
-        <p>Compose the Future with Suno API: Where AI and Melody Unite Seamlessly! Transform text prompts into stunning AI-generated tracks, blending vocals and instruments with revolutionary realism. Newly added V5 delivers hyper-dynamic, natural performances—emotional arcs, breathing, and fluid progressions for lifelike depth. Ideal for developers crafting immersive apps: fast and scalable. Revolutionize music creation today!</p>
+        <p>Where AI and Melody Unite Seamlessly! Transform text prompts into stunning AI-generated tracks, blending vocals and instruments with revolutionary realism. Newly added V5 delivers hyper-dynamic, natural performances—emotional arcs, breathing, and fluid progressions for lifelike depth. Ideal for developers crafting immersive apps: fast and scalable. Revolutionize music creation today!</p>
       </div>
     </div>
 
@@ -84,10 +84,10 @@
 
           <!-- 音乐延长功能特定字段 -->
           <template v-if="formData.function === 'extend'">
-            <!-- 音频 -->
+            <!-- 音频ID -->
             <div class="form-group">
               <label for="audio-id" class="form-label">
-                Audio <span class="required">*</span>
+                Audio ID <span class="required">*</span>
               </label>
               <select 
                 id="audio-id"
@@ -100,21 +100,33 @@
                 <option value="f342b2c3-d4e5-f6g7-8901-234567890def">Sample Audio 2 - Classical Music</option>
               </select>
               <div class="form-hint">
-                Unique identifier for the audio track to extend
+                Unique identifier for the audio track to extend. All extension requests require this parameter.
               </div>
             </div>
 
             <!-- 参数来源选择 -->
             <div class="form-group">
-              <label class="checkbox-label" for="default-param-flag">
-                <input 
-                  id="default-param-flag"
-                  v-model="formData.defaultParamFlag" 
-                  type="checkbox"
-                >
-                <span class="checkmark"></span>
-                Use Custom Parameters
+              <label class="form-label">
+                Parameter Source <span class="required">*</span>
               </label>
+              <div class="mode-switch">
+                <button 
+                  type="button" 
+                  class="mode-btn" 
+                  :class="{ active: formData.defaultParamFlag }"
+                  @click="formData.defaultParamFlag = true"
+                >
+                  <i class="fas fa-sliders-h"></i> Use Custom Parameters
+                </button>
+                <button 
+                  type="button" 
+                  class="mode-btn" 
+                  :class="{ active: !formData.defaultParamFlag }"
+                  @click="formData.defaultParamFlag = false"
+                >
+                  <i class="fas fa-clone"></i> Use Original Audio Parameters
+                </button>
+              </div>
               <div class="form-hint">
                 {{ formData.defaultParamFlag ? 'Use custom parameters specified in this request' : 'Use original audio parameters' }}
               </div>
@@ -131,12 +143,12 @@
                 type="number" 
                 class="form-input" 
                 placeholder="e.g.: 60"
-                min="0"
-                step="1"
+                min="0.01"
+                step="0.01"
                 required
               >
               <div class="form-hint">
-                Specify the time point from the original audio to start the extension
+                Time point (in seconds) where audio starts extending. Must be greater than 0 and less than the total duration of the generated audio.
               </div>
             </div>
           </template>
@@ -385,7 +397,7 @@
           </template>
 
           <!-- 提示词输入 -->
-          <div class="form-group">
+          <div class="form-group" v-if="formData.function !== 'extend' || formData.defaultParamFlag">
             <label for="prompt" class="form-label">
               Prompt <span class="required" v-if="isPromptRequired">*</span>
             </label>
@@ -408,8 +420,8 @@
 
           <!-- 自定义模式下的额外字段 -->
           <template v-if="formData.customMode || (formData.function === 'extend' && formData.defaultParamFlag) || formData.function === 'cover' || (formData.function === 'expand' && formData.expandDefaultParamFlag) || formData.function === 'accompaniment' || formData.function === 'vocal'">
-            <!-- 纯音乐选择 -->
-            <div class="form-group">
+            <!-- 纯音乐选择 (仅在非extend功能时显示) -->
+            <div class="form-group" v-if="formData.function !== 'extend'">
               <label class="checkbox-label" for="instrumental">
                 <input 
                   id="instrumental"
@@ -435,11 +447,11 @@
                 type="text" 
                 class="form-input" 
                 placeholder="e.g.: classical, jazz, electronic, pop, rock"
-                :maxlength="getStyleMaxLength()"
+                :maxlength="formData.function === 'extend' ? 200 : getStyleMaxLength()"
                 required
               >
               <div class="form-hint">
-                Defines genre, mood, or artistic direction
+                {{ formData.function === 'extend' ? 'Music style specification for extended audio. Usually should match the original audio style for best results. Max 200 characters.' : 'Defines genre, mood, or artistic direction' }}
               </div>
             </div>
 
@@ -454,16 +466,16 @@
                 type="text" 
                 class="form-input" 
                 placeholder="e.g.: Peaceful Piano Meditation"
-                maxlength="80"
+                :maxlength="formData.function === 'extend' ? 80 : 80"
                 required
               >
               <div class="form-hint">
-                Will be displayed in the player interface and filename
+                {{ formData.function === 'extend' ? 'Title of the extended music track. Will be displayed in the player interface and filename. Max 80 characters.' : 'Will be displayed in the player interface and filename' }}
               </div>
             </div>
 
-            <!-- 人声性别（仅在非纯音乐时显示） -->
-            <div class="form-group" v-if="!formData.instrumental">
+            <!-- 人声性别（仅在非纯音乐时显示，且非extend功能或extend且defaultParamFlag为true时） -->
+            <div class="form-group" v-if="(formData.function !== 'extend' && !formData.instrumental) || (formData.function === 'extend' && formData.defaultParamFlag)">
               <label for="vocal-gender" class="form-label">Vocal Gender</label>
               <select id="vocal-gender" v-model="formData.vocalGender" class="form-input">
                 <option value="">Not specified</option>
@@ -471,7 +483,7 @@
                 <option value="f">Female</option>
               </select>
               <div class="form-hint">
-                Note: This parameter can only increase probability, but cannot guarantee compliance
+                Vocal gender preference. Optional. 'm' for male, 'f' for female. According to practice, this parameter can only strengthen probability but cannot guarantee compliance.
               </div>
             </div>
 
@@ -486,14 +498,14 @@
                 placeholder="e.g.: heavy metal, fast drums"
               >
               <div class="form-hint">
-                Music styles or characteristics to exclude from generated audio
+                {{ formData.function === 'extend' ? 'Music styles or characteristics to exclude from extended audio. Optional. Used to avoid specific unwanted features.' : 'Music styles or characteristics to exclude from generated audio' }}
               </div>
             </div>
 
-            <!-- 风格权重 -->
-            <div class="form-group">
+            <!-- 风格权重 (仅在extend且defaultParamFlag为true或其他功能时显示) -->
+            <div class="form-group" v-if="formData.function === 'extend' ? formData.defaultParamFlag : true">
               <label for="style-weight" class="form-label">
-                Style Weight ({{ formData.styleWeight }})
+                Style Weight ({{ formData.styleWeight.toFixed(2) }})
               </label>
               <input 
                 id="style-weight"
@@ -508,12 +520,15 @@
                 <span>Loose (0)</span>
                 <span>Strict (1)</span>
               </div>
+              <div class="form-hint" v-if="formData.function === 'extend'">
+                Intensity of adherence to specified style. Optional. Range 0-1, rounded to 2 decimal places.
+              </div>
             </div>
 
-            <!-- 创意约束 -->
-            <div class="form-group">
+            <!-- 创意约束 (仅在extend且defaultParamFlag为true或其他功能时显示) -->
+            <div class="form-group" v-if="formData.function === 'extend' ? formData.defaultParamFlag : true">
               <label for="weirdness-constraint" class="form-label">
-                Creative Constraint ({{ formData.weirdnessConstraint }})
+                Creative Constraint ({{ formData.weirdnessConstraint.toFixed(2) }})
               </label>
               <input 
                 id="weirdness-constraint"
@@ -528,12 +543,15 @@
                 <span>Conservative (0)</span>
                 <span>Experimental (1)</span>
               </div>
+              <div class="form-hint" v-if="formData.function === 'extend'">
+                Controls experimental/creative deviation. Optional. Range 0-1, rounded to 2 decimal places.
+              </div>
             </div>
 
-            <!-- 音频权重 -->
-            <div class="form-group">
+            <!-- 音频权重 (仅在extend且defaultParamFlag为true或其他功能时显示) -->
+            <div class="form-group" v-if="formData.function === 'extend' ? formData.defaultParamFlag : true">
               <label for="audio-weight" class="form-label">
-                Audio Weight ({{ formData.audioWeight }})
+                Audio Weight ({{ formData.audioWeight.toFixed(2) }})
               </label>
               <input 
                 id="audio-weight"
@@ -547,6 +565,9 @@
               <div class="slider-labels">
                 <span>Low Weight (0)</span>
                 <span>High Weight (1)</span>
+              </div>
+              <div class="form-hint" v-if="formData.function === 'extend'">
+                Relative weight of audio elements. Optional. Range 0-1, rounded to 2 decimal places.
               </div>
             </div>
           </template>
@@ -619,7 +640,7 @@
     <div class="usage-tips">
       <div class="tip-item">
         <span class="tip-icon">🎵</span>
-        <span>Music Generation: Create brand new music works; Music Extension: Extend existing audio; Audio Cover: Recreate based on uploaded audio; Audio Expansion: Expand based on uploaded audio; Accompaniment Generation: Generate accompaniment for uploaded source audio files; Vocal Generation: Generate vocals for source audio files</span>
+        <span>Music Generation: Create new music; Music Extension: Extend existing audio; Audio Cover: Recreate audio; Audio Expansion: Expand on uploaded audio; Accompaniment: Generate accompaniment; Vocal Generation: Generate vocals for audio</span>
       </div>
       <div class="tip-item">
         <span class="tip-icon">🎼</span>
@@ -705,42 +726,42 @@ const functionOptions = ref([
   {
     id: 'generate',
     name: 'Music Generation',
-    description: 'Create brand new music works',
+    description: 'Create new music',
     detailDescription: 'Generate complete music works from scratch, supports custom mode and simple mode, can control music style, lyrics content and other parameters',
     icon: 'fas fa-music'
   },
   {
     id: 'extend',
     name: 'Music Extension',
-    description: 'Extend existing music works',
+    description: 'Extend existing music',
     detailDescription: 'Extend based on selected audio, supports custom parameter mode, can control the music style and content of the extended part',
     icon: 'fas fa-expand-arrows-alt'
   },
   {
     id: 'cover',
     name: 'Audio Cover',
-    description: 'Recreate based on uploaded audio',
+    description: 'Recreate audio',
     detailDescription: 'Upload audio file for recreation, supports custom mode, can control music style, lyrics content and other parameters',
     icon: 'fas fa-microphone'
   },
   {
     id: 'expand',
     name: 'Audio Expansion',
-    description: 'Expand based on uploaded audio',
+    description: 'Expand on uploaded audio',
     detailDescription: 'Upload audio file for expansion, supports custom parameter mode, can control the music style and content of the expanded part',
     icon: 'fas fa-compress-arrows-alt'
   },
   {
     id: 'accompaniment',
-    name: 'Accompaniment Generation',
-    description: 'Generate accompaniment for source audio files',
+    name: 'Accompaniment',
+    description: 'Generate accompaniment',
     detailDescription: 'Add background accompaniment to existing audio, control music style through include and exclude tags, no prompt needed',
     icon: 'fas fa-guitar'
   },
   {
     id: 'vocal',
     name: 'Vocal Generation',
-    description: 'Generate vocals for source audio files',
+    description: 'Generate vocals for audio',
     detailDescription: 'Add vocal singing to existing audio, guide singing content and style through prompts, supports music style and exclude tags control',
     icon: 'fas fa-user'
   }
@@ -802,9 +823,11 @@ const isPromptRequired = computed(() => {
 
 const canGenerate = computed(() => {
   if (formData.function === 'extend') {
+    // audioId is always required
     if (!formData.audioId.trim()) {
       return false
     }
+    // If defaultParamFlag is true, require continueAt, prompt, style, and title
     if (formData.defaultParamFlag) {
       if (!formData.prompt.trim() || !formData.style.trim() || !formData.title.trim()) {
         return false
@@ -813,6 +836,7 @@ const canGenerate = computed(() => {
         return false
       }
     }
+    // If defaultParamFlag is false, only audioId is needed (already checked above)
   } else if (formData.function === 'cover') {
     if (!uploadedFile.value) {
       return false
@@ -875,47 +899,41 @@ const canGenerate = computed(() => {
 // 方法
 const getFunctionDescription = () => {
   const descriptions = {
-    'generate': 'Create brand new music works',
-    'extend': 'Extend existing music works',
-    'cover': 'Recreate based on uploaded audio files',
-    'expand': 'Expand based on uploaded audio files',
-    'accompaniment': 'Generate accompaniment for source audio files',
-    'vocal': 'Generate vocals for source audio files'
+    'generate': 'Create new music',
+    'extend': 'Extend existing music',
+    'cover': 'Recreate audio',
+    'expand': 'Expand on uploaded audio files',
+    'accompaniment': 'Generate accompaniment',
+    'vocal': 'Generate vocals for audio'
   }
   return descriptions[formData.function] || ''
 }
 
 const getPromptPlaceholder = () => {
   if (formData.function === 'extend') {
-    return 'Describe how the music should continue or change in the extended part (e.g.: extend the music with more relaxing notes and a soft transition)'
+    return ''
   }
   
   if (formData.function === 'cover') {
-    return formData.instrumental 
-      ? 'Describe the desired audio content to generate (e.g.: a calm and soothing piano piece with a gentle melody)'
-      : 'Enter lyrics content, which will be used strictly as lyrics and sung in the generated music'
+    return ''
   }
   
   if (formData.function === 'expand') {
-    return formData.instrumental 
-      ? 'Describe how the music should expand (e.g.: extend the music with more soothing notes)'
-      : 'Enter lyrics content, which will be used strictly as lyrics and sung in the expanded music'
+    return ''
   }
   
   if (formData.function === 'accompaniment') {
-    return 'Accompaniment generation does not require prompts, control music style through tags'
+    return ''
   }
   
   if (formData.function === 'vocal') {
-    return 'Text describing audio content, used to guide vocal singing content and style (e.g.: A calm and relaxing piano track.)'
+    return ''
   }
   
   if (formData.customMode) {
-    return formData.instrumental 
-      ? 'Describe music style and mood (e.g.: a calm and soothing piano piece)'
-      : 'Enter lyrics content, which will be used strictly as lyrics and sung in the generated track'
+    return ''
   }
-  return 'Describe the music content you want (e.g.: a short relaxing piano piece)'
+  return ''
 }
 
 const getPromptMaxLength = () => {
@@ -965,7 +983,7 @@ const getPromptMaxLength = () => {
 
 const getPromptHint = () => {
   if (formData.function === 'extend') {
-    return 'Describe how the music should continue or change in the extended part, max 3000 characters'
+    return 'Describe how the music should continue or change in the extended part. Max 3000 characters.'
   }
   
   if (formData.function === 'cover') {
@@ -1500,6 +1518,10 @@ const shareResult = () => {
 .form-input:focus {
   outline: none;
   border-color: #10b981;
+}
+
+#prompt {
+  background: transparent;
 }
 
 .model-select {

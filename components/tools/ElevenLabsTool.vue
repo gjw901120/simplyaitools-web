@@ -46,23 +46,35 @@
 
           <!-- 文本转语音功能 -->
           <template v-if="formData.function === 'multilingual-v2' || formData.function === 'turbo-2-5'">
-            <!-- 语音ID选择 -->
+            <!-- 语音选择 -->
             <div class="form-group">
-              <label for="voice-id" class="form-label">Voice ID *</label>
-              <select id="voice-id" v-model="formData.voiceId" class="form-input" required>
-                <option value="">Please select voice</option>
-                <option value="21m00Tcm4TlvDq8ikWAM">Rachel - Female, American English</option>
-                <option value="AZnzlk1XvdvUeBnXmlld">Domi - Female, American English</option>
-                <option value="EXAVITQu4vr4xnSDxMaL">Bella - Female, American English</option>
-                <option value="ErXwobaYiN019PkySvjV">Antoni - Male, American English</option>
-                <option value="MF3mGyEYCl7XYWbV9V6O">Elli - Female, American English</option>
-                <option value="TxGEqnHWrfWFTfGW9XjX">Josh - Male, American English</option>
-                <option value="VR6AewLTigWG4xSOukaG">Arnold - Male, American English</option>
-                <option value="pNInz6obpgDQGcFmaJgB">Adam - Male, American English</option>
-                <option value="yoZ06aMxZJJ28mfd3POQ">Sam - Male, American English</option>
+              <label for="voice" class="form-label">Voice</label>
+              <select id="voice" v-model="formData.voice" class="form-input">
+                <option value="">Not specified</option>
+                <option value="Rachel">Rachel</option>
+                <option value="Aria">Aria</option>
+                <option value="Roger">Roger</option>
+                <option value="Sarah">Sarah</option>
+                <option value="Laura">Laura</option>
+                <option value="Charlie">Charlie</option>
+                <option value="George">George</option>
+                <option value="Callum">Callum</option>
+                <option value="River">River</option>
+                <option value="Liam">Liam</option>
+                <option value="Charlotte">Charlotte</option>
+                <option value="Alice">Alice</option>
+                <option value="Matilda">Matilda</option>
+                <option value="Will">Will</option>
+                <option value="Jessica">Jessica</option>
+                <option value="Eric">Eric</option>
+                <option value="Chris">Chris</option>
+                <option value="Brian">Brian</option>
+                <option value="Daniel">Daniel</option>
+                <option value="Lily">Lily</option>
+                <option value="Bill">Bill</option>
               </select>
               <div class="form-hint">
-                Choose your preferred voice style and gender
+                Optional. The voice to use for speech generation
               </div>
             </div>
 
@@ -93,7 +105,7 @@
                 <!-- 稳定性 -->
                 <div class="setting-item">
                   <label for="stability" class="setting-label">
-                    Stability ({{ formData.voiceSettings.stability }})
+                    Stability ({{ formData.voiceSettings.stability.toFixed(2) }})
                   </label>
                   <input 
                     id="stability"
@@ -113,11 +125,11 @@
                 <!-- 相似性 -->
                 <div class="setting-item">
                   <label for="similarity-boost" class="setting-label">
-                    Similarity Boost ({{ formData.voiceSettings.similarityBoost }})
+                    Similarity Boost ({{ formData.voiceSettings.similarity_boost.toFixed(2) }})
                   </label>
                   <input 
                     id="similarity-boost"
-                    v-model.number="formData.voiceSettings.similarityBoost" 
+                    v-model.number="formData.voiceSettings.similarity_boost" 
                     type="range" 
                     min="0" 
                     max="1" 
@@ -133,7 +145,7 @@
                 <!-- 风格 -->
                 <div class="setting-item">
                   <label for="style" class="setting-label">
-                    Style ({{ formData.voiceSettings.style }})
+                    Style ({{ formData.voiceSettings.style.toFixed(2) }})
                   </label>
                   <input 
                     id="style"
@@ -150,21 +162,99 @@
                   </div>
                 </div>
 
-                <!-- 使用说话者增强 -->
+                <!-- 语速 -->
                 <div class="setting-item">
-                  <label class="checkbox-label" for="use-speaker-boost">
+                  <label for="speed" class="setting-label">
+                    Speed ({{ formData.voiceSettings.speed.toFixed(2) }})
+                  </label>
+                  <input 
+                    id="speed"
+                    v-model.number="formData.voiceSettings.speed" 
+                    type="range" 
+                    min="0.7" 
+                    max="1.2" 
+                    step="0.01"
+                    class="form-slider"
+                  >
+                  <div class="slider-labels">
+                    <span>Slow (0.7)</span>
+                    <span>Fast (1.2)</span>
+                  </div>
+                  <div class="form-hint">
+                    Values below 1.0 slow down speech, above 1.0 speed it up. Extreme values may affect quality.
+                  </div>
+                </div>
+
+                <!-- 时间戳 -->
+                <div class="setting-item">
+                  <label class="checkbox-label" for="timestamps">
                     <input 
-                      id="use-speaker-boost"
-                      v-model="formData.voiceSettings.useSpeakerBoost" 
+                      id="timestamps"
+                      v-model="formData.timestamps" 
                       type="checkbox"
                     >
                     <span class="checkmark"></span>
-                    Use Speaker Boost
+                    Return Timestamps
                   </label>
                   <div class="form-hint">
-                    Enhance voice clarity and naturalness
+                    Whether to return timestamps for each word in the generated speech
                   </div>
                 </div>
+              </div>
+            </div>
+
+            <!-- 上下文文本 -->
+            <div class="form-group">
+              <label class="form-label">Context Text (Optional)</label>
+              <div class="form-group" style="margin-bottom: 12px;">
+                <label for="previous-text" class="form-label">Previous Text</label>
+                <textarea 
+                  id="previous-text"
+                  v-model="formData.previous_text" 
+                  class="form-input" 
+                  rows="2" 
+                  placeholder="Text that came before the current request"
+                  maxlength="5000"
+                ></textarea>
+                <div class="form-hint">
+                  Optional. Can be used to improve speech continuity when concatenating multiple generations. Max 5000 characters.
+                </div>
+                <div class="char-count">
+                  {{ formData.previous_text.length }}/5000
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="next-text" class="form-label">Next Text</label>
+                <textarea 
+                  id="next-text"
+                  v-model="formData.next_text" 
+                  class="form-input" 
+                  rows="2" 
+                  placeholder="Text that comes after the current request"
+                  maxlength="5000"
+                ></textarea>
+                <div class="form-hint">
+                  Optional. Can be used to improve speech continuity when concatenating multiple generations. Max 5000 characters.
+                </div>
+                <div class="char-count">
+                  {{ formData.next_text.length }}/5000
+                </div>
+              </div>
+            </div>
+
+            <!-- 语言代码（仅Turbo 2.5） -->
+            <div class="form-group" v-if="formData.function === 'turbo-2-5'">
+              <label for="language-code" class="form-label">Language Code</label>
+              <input 
+                id="language-code"
+                v-model="formData.language_code" 
+                type="text" 
+                class="form-input" 
+                placeholder="e.g.: en, zh, ja"
+                maxlength="500"
+              >
+              <div class="form-hint">
+                Optional. Language code (ISO 639-1) to enforce a language for the model. Only Turbo v2.5 and Flash v2.5 support language enforcement.
               </div>
             </div>
 
@@ -568,7 +658,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, watch } from 'vue'
 import AudioUpload from '../AudioUpload.vue'
 import UploadAudio from './common/UploadAudio.vue'
 
@@ -576,14 +666,19 @@ import UploadAudio from './common/UploadAudio.vue'
 const formData = reactive({
   function: 'multilingual-v2',
   // 文本转语音相关
-  voiceId: '',
+  model: '', // 将根据 function 自动设置
+  voice: '', // 使用文档中的选项：Rachel, Aria, Roger 等
   text: '',
   voiceSettings: {
     stability: 0.5,
-    similarityBoost: 0.75,
+    similarity_boost: 0.75,
     style: 0.0,
-    useSpeakerBoost: true
+    speed: 1.0
   },
+  timestamps: false,
+  previous_text: '',
+  next_text: '',
+  language_code: '', // 仅Turbo 2.5支持
   outputFormat: 'mp3_44100_128',
   // 语音转文本相关
   language: 'auto',
@@ -640,6 +735,15 @@ const functionOptions = ref([
   }
 ])
 
+// 监听 function 变化，自动设置 model
+watch(() => formData.function, (newFunction) => {
+  if (newFunction === 'multilingual-v2') {
+    formData.model = 'elevenlabs/text-to-speech-multilingual-v2'
+  } else if (newFunction === 'turbo-2-5') {
+    formData.model = 'elevenlabs/text-to-speech-turbo-2-5'
+  }
+}, { immediate: true })
+
 // 结果数据
 const result = ref(null)
 const isPlaying = ref(false)
@@ -677,7 +781,7 @@ const textToSpeechProgress = ref(0)
 // 计算属性
 const canGenerate = computed(() => {
   if (formData.function === 'multilingual-v2' || formData.function === 'turbo-2-5') {
-    return formData.text.trim().length > 0 && formData.voiceId.trim().length > 0
+    return formData.text.trim().length > 0
   } else if (formData.function === 'speech-to-text') {
     return formData.uploadedSpeechFile !== null
   } else if (formData.function === 'sound-effect-v2') {
@@ -697,8 +801,8 @@ const switchFunction = (functionId) => {
 
 const getConfigTitle = () => {
   const titles = {
-    'multilingual-v2': 'Multilingual v2 Configuration',
-    'turbo-2-5': 'Turbo 2.5 Configuration',
+    'multilingual-v2': 'Text-to-Speech Multilingual v2 Configuration',
+    'turbo-2-5': 'Text-to-Speech Turbo 2.5 Configuration',
     'speech-to-text': 'Speech-to-Text Configuration',
     'sound-effect-v2': 'Sound Effect v2 Configuration',
     'audio-isolation': 'Audio Isolation Configuration'

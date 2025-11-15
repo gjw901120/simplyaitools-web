@@ -170,8 +170,8 @@
             />
         </div>
 
-        <!-- 模型选择 - 非视频扩展模式显示 -->
-        <div v-if="formData.generationType !== 'VIDEO_EXTEND'" class="form-group">
+        <!-- 模型选择 - 非视频扩展模式和Image to Video模式显示 -->
+        <div v-if="formData.generationType !== 'VIDEO_EXTEND' && formData.generationType !== 'REFERENCE_2_VIDEO'" class="form-group">
           <label class="form-label">Model Type</label>
           <div class="option-tabs two-columns">
             <button 
@@ -198,8 +198,8 @@
           </div>
         </div>
 
-          <!-- 宽高比选择 - 非视频扩展模式显示 -->
-        <div v-if="formData.generationType !== 'VIDEO_EXTEND'" class="form-group">
+          <!-- 宽高比选择 - 非视频扩展模式和Image to Video模式显示 -->
+        <div v-if="formData.generationType !== 'VIDEO_EXTEND' && formData.generationType !== 'REFERENCE_2_VIDEO'" class="form-group">
           <label class="form-label">Video Aspect Ratio</label>
           <div class="option-tabs three-columns">
             <button 
@@ -450,6 +450,9 @@ watch(() => formData.generationType, async (newType) => {
       console.error('Failed to load default images:', error)
     }
   } else if (newType === 'REFERENCE_2_VIDEO') {
+    // Image to Video 模式：自动设置为 fast 模型和 16:9 宽高比
+    formData.model = 'veo3_fast'
+    formData.aspectRatio = '16:9'
     // 自动加载默认图片
     try {
       const oneResponse = await fetch('/tools-example/veo3_i2v_one.webp')

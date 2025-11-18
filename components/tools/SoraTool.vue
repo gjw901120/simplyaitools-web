@@ -208,36 +208,27 @@
           </div>
         </div>
 
-        <!-- watermark remover 专用：上传视频（类似 Luma） -->
+        <!-- watermark remover 专用：视频 URL 下拉选择 -->
         <div class="form-group" v-if="form.model === 'watermark-remover'">
-          <label class="form-label">Video Upload</label>
-          <div class="upload-area" :class="{ 'has-files': watermarkVideo }">
-            <div v-if="!watermarkVideo" class="upload-content">
-              <div class="upload-icon">
-                <i class="fas fa-video"></i>
-              </div>
-              <div class="upload-text">
-                <p class="upload-title">Upload Input Video</p>
-                <p class="upload-subtitle">Supports MP4, MOV, AVI formats, maximum 500MB</p>
-              </div>
-            </div>
-            <div v-else class="uploaded-content">
-              <div class="uploaded-video-container">
-                <video :src="watermarkVideo" class="uploaded-video" controls>
-                  Your browser does not support video playback
-                </video>
-                <button @click="clearWatermarkVideo" class="remove-video-btn" title="Delete Video">
-                  <i class="fas fa-times"></i>
-                </button>
-              </div>
-              <div class="uploaded-text">
-                <p class="upload-title">Video Selected</p>
-                <p class="upload-subtitle">Click to re-select</p>
-              </div>
-            </div>
-            <input type="file" accept="video/*" @change="handleWatermarkVideoUpload" class="file-input" />
+          <label class="form-label">Video Url <span class="required">*</span></label>
+          <div class="select-wrapper">
+            <select
+              v-model="form.input.video_url"
+              class="form-select"
+              :disabled="isLoadingVideoList"
+            >
+              <option value="">Please select a video</option>
+              <option 
+                v-for="video in videoList" 
+                :key="video.value || video.url || video.id"
+                :value="video.value || video.url || video.id"
+              >
+                {{ video.label || video.name || video.title || video.url }}
+              </option>
+            </select>
+            <i class="fas fa-chevron-down"></i>
           </div>
-          
+          <div class="form-help">Select a video URL from the list</div>
         </div>
 
         <!-- storyboard shots builder -->
@@ -334,13 +325,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue'
-const fileToBase64 = (file) => new Promise((resolve, reject) => {
-  const reader = new FileReader()
-  reader.onload = () => resolve(String(reader.result))
-  reader.onerror = reject
-  reader.readAsDataURL(file)
-})
+import { ref, reactive, computed, watch } from 'vue'
 import UploadImage from './common/UploadImage.vue'
 
 const isClient = typeof window !== 'undefined'
@@ -360,7 +345,8 @@ const form = reactive({
 })
 
 const imageUrlsText = ref('')
-const watermarkVideo = ref('')
+const videoList = ref([])
+const isLoadingVideoList = ref(false)
 const scenes = ref([{ id: Date.now(), scene: '', duration: '7.5' }])
 const totalSceneDuration = computed(() => scenes.value.reduce((sum, s) => sum + (parseFloat(s.duration) || 0), 0))
 const framesSeconds = computed(() => Number(form.input.n_frames || 0))
@@ -388,26 +374,38 @@ const switchMode = (model) => {
   form.model = model
 }
 
-const handleWatermarkVideoUpload = async (e) => {
-  const file = e.target.files?.[0]
-  if (!file) return
-  if (!file.type.startsWith('video/')) return
-  if (file.size > 500 * 1024 * 1024) return
+// 获取视频列表
+const fetchVideoList = async () => {
+  if (isLoadingVideoList.value) return
+  isLoadingVideoList.value = true
   try {
-    watermarkVideo.value = await fileToBase64(file)
-  } catch (err) {
-    watermarkVideo.value = ''
+    const response = await fetch('/api/sora/video-list')
+    if (response.ok) {
+      const data = await response.json()
+      videoList.value = Array.isArray(data) ? data : (data.list || data.videos || [])
+    } else {
+      console.error('Failed to fetch video list')
+      videoList.value = []
+    }
+  } catch (error) {
+    console.error('Error fetching video list:', error)
+    videoList.value = []
+  } finally {
+    isLoadingVideoList.value = false
   }
 }
 
-const clearWatermarkVideo = () => {
-  watermarkVideo.value = ''
-}
+// 监听模式切换，如果是 watermark-remover 则加载视频列表
+watch(() => form.model, (newModel) => {
+  if (newModel === 'watermark-remover' && videoList.value.length === 0) {
+    fetchVideoList()
+  }
+}, { immediate: true })
 
 const canSubmit = computed(() => {
-  // watermark remover: require uploaded video
+  // watermark remover: require selected video URL
   if (form.model === 'watermark-remover') {
-    return !!watermarkVideo.value
+    return !!form.input.video_url && form.input.video_url.trim() !== ''
   }
   // storyboard: require n_frames and at least one scene, and total duration must equal frames
   if (form.model === 'pro-storyboard') {
@@ -440,8 +438,8 @@ const buildPayload = () => {
   if (['image-to-video','pro-image-to-video','pro-storyboard'].includes(form.model)) {
     payload.input.image_urls = Array.isArray(form.input.image_urls) ? form.input.image_urls : []
   }
-  if (form.model === 'watermark-remover' && watermarkVideo.value) {
-    payload.input.video_url = watermarkVideo.value
+  if (form.model === 'watermark-remover' && form.input.video_url) {
+    payload.input.video_url = String(form.input.video_url)
   }
   if (['pro-text-to-video','pro-image-to-video'].includes(form.model) && form.input.size) {
     payload.input.size = String(form.input.size)
@@ -516,6 +514,7 @@ const onSubmit = async () => {
 
 .form-group { margin-bottom: 20px; }
 .form-group label { display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px; }
+.form-group .required { color: #ef4444; }
 .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; transition: border-color 0.2s ease; box-sizing: border-box; }
 .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
 .char-count { text-align: right; font-size: 12px; color: #64748b; margin-top: 4px; }
@@ -530,6 +529,9 @@ const onSubmit = async () => {
 .select-wrapper { position: relative; }
 .select-wrapper select { appearance: none; padding-right: 40px; }
 .select-wrapper i { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #64748b; pointer-events: none; }
+.form-select { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; transition: border-color 0.2s ease; box-sizing: border-box; background: white; }
+.form-select:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+.form-select:disabled { background: #f3f4f6; cursor: not-allowed; }
 
 /* 上传区域样式（复用 Luma 风格） */
 .upload-area { position: relative; border: 2px dashed #d1d5db; border-radius: 12px; padding: 24px; text-align: center; transition: all 0.3s ease; background: #fafafa; cursor: pointer; }
